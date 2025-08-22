@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Virtual Pet Game</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: #87ceeb;
+    }
+    h1, h2 {
+      color: #fff;
+      text-shadow: 2px 2px #4a90e2;
+    }
+    .room { display: none; margin-top: 40px; }
+    .active { display: block; }
+    .pet-anim {
+      width: 150px;
+      margin: 20px auto;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    .bar {
+      width: 250px; height: 22px;
+      background: #ddd;
+      border-radius: 12px;
+      margin: 10px auto;
+      overflow: hidden;
+      box-shadow: inset 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    .fill {
+      height: 100%; background: #4caf50;
+      width: 100%; transition: width 0.3s;
+    }
+    button {
+      margin: 8px; padding: 12px;
+      font-size: 18px; border: none;
+      border-radius: 15px; cursor: pointer;
+      background: #ffcc00;
+      box-shadow: 2px 2px #d4a017;
+    }
+    button:hover {
+      transform: scale(1.1);
+      background: #ffe066;
+    }
+    .nav {
+      position: fixed; bottom: 0; width: 100%;
+      background: #4a90e2; padding: 10px;
+      display: flex; justify-content: space-around;
+    }
+    .nav button {
+      background: #fff; color: #333;
+      font-weight: bold; box-shadow: 2px 2px #aaa;
+    }
+    #music-toggle {
+  position: fixed;
+  top: 20px;       /* pindah ke atas */
+  right: 20px;     /* pindah ke kanan */
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 28px;
+  color: white;
+}
+
+    
+  </style>
+</head>
+<body>
+  <h1>🐱 Virtual Pet Game</h1>
+  <img id="pet" class="pet-anim" src="https://png.pngtree.com/png-vector/20240310/ourmid/pngtree-kawaii-cute-happy-cat-in-clipart-generative-ai-png-image_11924863.png">
+
+  <!-- Status Bar -->
+  <div>Hunger</div>
+  <div class="bar"><div id="hunger" class="fill" style="width:80%"></div></div>
+  <div>Happiness</div>
+  <div class="bar"><div id="happy" class="fill" style="width:80%"></div></div>
+  <div>Energy</div>
+  <div class="bar"><div id="energy" class="fill" style="width:80%"></div></div>
+  <div>Cleanliness</div>
+  <div class="bar"><div id="clean" class="fill" style="width:80%"></div></div>
+
+  <!-- Kamar -->
+  <div id="room-bedroom" class="room active">
+    <h2>🛏 Kamar</h2>
+    <button onclick="sleepPet()">😴 Tidur</button>
+  </div>
+  <!-- Kamar Mandi -->
+  <div id="room-bathroom" class="room">
+    <h2>🚿 Kamar Mandi</h2>
+    <button onclick="bathPet()">🧼 Mandi</button>
+  </div>
+  <!-- Ruang Bermain -->
+  <div id="room-playroom" class="room">
+    <h2>🎲 Ruang Bermain</h2>
+    <button onclick="playBall()">⚽ Bola</button>
+    <button onclick="playBalloon()">🎈 Balon</button>
+  </div>
+  <!-- Dapur -->
+  <div id="room-kitchen" class="room">
+    <h2>🍽 Dapur</h2>
+    <button onclick="feedPet(20)">🍖 Daging</button>
+    <button onclick="feedPet(15)">🍎 Apel</button>
+    <button onclick="feedPet(10)">🥛 Susu</button>
+    <button onclick="feedPet(25)">🍪 Kue</button>
+  </div>
+
+  <!-- Navigasi -->
+  <div class="nav">
+    <button onclick="switchRoom('bedroom')">🛏</button>
+    <button onclick="switchRoom('bathroom')">🚿</button>
+    <button onclick="switchRoom('playroom')">🎲</button>
+    <button onclick="switchRoom('kitchen')">🍽</button>
+  </div>
+
+  <!-- Musik -->
+  <audio id="bg-music" autoplay loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-cute.mp3" type="audio/mpeg">
+  </audio>
+  <button id="music-toggle" onclick="toggleMusic()">🔊</button>
+
+  <script>
+    let hunger = 80, happy = 80, energy = 80, clean = 80;
+    const music = document.getElementById("bg-music");
+    const musicBtn = document.getElementById("music-toggle");
+    let musicOn = true;
+
+    function toggleMusic() {
+      if (musicOn) {
+        music.pause();
+        musicBtn.textContent = "🔇";
+      } else {
+        music.play();
+        musicBtn.textContent = "🔊";
+      }
+      musicOn = !musicOn;
+    }
+
+    function updateBars() {
+      document.getElementById("hunger").style.width = hunger + "%";
+      document.getElementById("happy").style.width = happy + "%";
+      document.getElementById("energy").style.width = energy + "%";
+      document.getElementById("clean").style.width = clean + "%";
+
+      const petImg = document.getElementById("pet");
+      if (hunger < 30 || happy < 30 || energy < 30 || clean < 30) {
+        petImg.src = "https://png.pngtree.com/png-vector/20240316/ourmid/pngtree-cute-cat-sad-cartoon-illustration-png-image_11984479.png";
+      } else {
+        petImg.src = "https://png.pngtree.com/png-vector/20240310/ourmid/pngtree-kawaii-cute-happy-cat-in-clipart-generative-ai-png-image_11924863.png";
+      }
+    }
+
+    function feedPet(amount) {
+      hunger = Math.min(100, hunger + amount);
+      updateBars();
+    }
+    function playBall() {
+      happy = Math.min(100, happy + 15);
+      energy = Math.max(0, energy - 10);
+      updateBars();
+    }
+    function playBalloon() {
+      happy = Math.min(100, happy + 20);
+      energy = Math.max(0, energy - 15);
+      updateBars();
+    }
+    function sleepPet() {
+      energy = Math.min(100, energy + 25);
+      hunger = Math.max(0, hunger - 10);
+      updateBars();
+    }
+    function bathPet() {
+      clean = Math.min(100, clean + 30);
+      energy = Math.max(0, energy - 5);
+      updateBars();
+    }
+    function switchRoom(room) {
+      document.querySelectorAll(".room").forEach(div => div.classList.remove("active"));
+      document.getElementById("room-" + room).classList.add("active");
+    }
+
+    // turunkan status lebih lama
+    setInterval(() => {
+      hunger = Math.max(0, hunger - 2);
+      happy = Math.max(0, happy - 2);
+      energy = Math.max(0, energy - 1);
+      clean = Math.max(0, clean - 1);
+      updateBars();
+    }, 10000);
+
+    updateBars();
+  </script>
+</body>
+</html>
