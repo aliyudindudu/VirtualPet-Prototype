@@ -34,7 +34,7 @@ CSS3 – simple cartoon-style visuals.
 JavaScript (Vanilla) – game logic and interactions.
 No external frameworks required, the game runs directly in the browser.
 
-##🚀 Future Improvements
+#🚀 Future Improvements
 
 This project is only a prototype, but future versions may include:
 🐾 Pet Meet via Camera → connect with other players and their pets through webcam/online meetings.
