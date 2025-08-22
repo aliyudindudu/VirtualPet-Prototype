@@ -60,8 +60,8 @@
     }
     #music-toggle {
   position: fixed;
-  top: 20px;       /* pindah ke atas */
-  right: 20px;     /* pindah ke kanan */
+  top: 20px;       
+  right: 20px;     
   background: none;
   border: none;
   cursor: pointer;
@@ -185,7 +185,7 @@
       document.getElementById("room-" + room).classList.add("active");
     }
 
-    // turunkan status lebih lama
+    
     setInterval(() => {
       hunger = Math.max(0, hunger - 2);
       happy = Math.max(0, happy - 2);
